@@ -6,6 +6,8 @@ from typing import TypedDict
 import httpx
 from dotenv import load_dotenv
 
+from .constants import NUM_WEEKS
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -148,8 +150,8 @@ class GitHubClient:
                 )
             weeks.append({"days": days})
 
-        # Always return exactly 52 weeks (truncate if more)
-        weeks = weeks[-52:] if len(weeks) > 52 else weeks
+        # Always return exactly NUM_WEEKS (truncate if more)
+        weeks = weeks[-NUM_WEEKS:] if len(weeks) > NUM_WEEKS else weeks
 
         return {
             "username": username,

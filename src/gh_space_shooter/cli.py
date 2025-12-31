@@ -145,7 +145,7 @@ def _save_data_to_file(data: ContributionData, file_path: str) -> None:
 
 def _generate_gif(data: ContributionData, file_path: str, strategy_name: str) -> None:
     """Generate animated GIF visualization."""
-    console.print(f"\n[bold blue]Generating GIF animation...[/bold blue]")
+    console.print("\n[bold blue]Generating GIF animation...[/bold blue]")
 
     # Select strategy
     if strategy_name == "column":

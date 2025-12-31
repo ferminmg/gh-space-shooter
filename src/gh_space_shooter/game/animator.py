@@ -42,7 +42,6 @@ class Animator:
         game_state = GameState(self.contribution_data)
         renderer = Renderer(game_state)
 
-        # Generate frames
         frames = self._generate_frames(game_state, renderer)
 
         # Save as GIF
@@ -70,29 +69,35 @@ class Animator:
             List of PIL Images representing animation frames
         """
         frames = []
+        bullet_flight_steps = 5  # Number of frames for bullet to travel
 
         # Add initial frame (ship off-screen)
         frames.append(renderer.render_frame())
 
         # Process each action from the strategy
         for action in self.strategy.generate_actions(self.contribution_data):
-            # Move ship to action position
-            game_state.ship.move_to(action.week, action.day)
+            # Move ship to action position (only horizontal movement)
+            game_state.ship.move_to(action.week)
 
-            # If action is to shoot, fire bullet
+            # If action is to shoot, fire bullet and animate it
             if action.shoot:
-                game_state.shoot(action.week, action.day)
+                bullet = game_state.shoot(action.week, action.day)
 
-                # Render frame with bullet
-                frames.append(renderer.render_frame())
+                # Animate bullet flying from ship to target
+                for step in range(bullet_flight_steps):
+                    bullet.progress = (step + 1) / bullet_flight_steps
+                    frames.append(renderer.render_frame())
 
-                # Clear bullets for next frame
+                # Hit the enemy when bullet reaches target
+                game_state.hit_target(action.week, action.day)
+
+                # Clear bullets for next action
                 game_state.clear_bullets()
             else:
-                # Just render ship movement
+                # Just render ship movement (no shooting)
                 frames.append(renderer.render_frame())
 
-        # Add final frame showing completion
+        # Add final frames showing completion
         frames.append(renderer.render_frame())
         frames.append(renderer.render_frame())  # Hold final frame longer
 
