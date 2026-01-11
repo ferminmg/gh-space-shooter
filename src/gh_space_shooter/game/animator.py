@@ -20,6 +20,7 @@ class Animator:
         contribution_data: ContributionData,
         strategy: BaseStrategy,
         fps: int,
+        watermark: bool = False,
     ):
         """
         Initialize animator.
@@ -28,10 +29,12 @@ class Animator:
             contribution_data: The GitHub contribution data
             strategy: The strategy to use for clearing enemies
             fps: Frames per second for the animation
+            watermark: Whether to add watermark to the GIF
         """
         self.contribution_data = contribution_data
         self.strategy = strategy
         self.fps = fps
+        self.watermark = watermark
         self.frame_duration = 1000 // fps
         # Delta time in seconds per frame
         # Used to scale all speeds (cells/second) to per-frame movement
@@ -46,7 +49,7 @@ class Animator:
         """
         # Initialize game state
         game_state = GameState(self.contribution_data)
-        renderer = Renderer(game_state, RenderContext.darkmode())
+        renderer = Renderer(game_state, RenderContext.darkmode(), watermark=self.watermark)
 
         frames = self._generate_frames(game_state, renderer)
 

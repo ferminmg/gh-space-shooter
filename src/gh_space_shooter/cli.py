@@ -60,6 +60,11 @@ def main(
         "--fps",
         help="Frames per second for the animation",
     ),
+    watermark: bool = typer.Option(
+        False,
+        "--watermark",
+        help="Add watermark to the GIF",
+    ),
 ) -> None:
     """
     Fetch or load GitHub contribution graph data and display it.
@@ -95,7 +100,7 @@ def main(
             _save_data_to_file(data, raw_output)
 
         # Generate GIF if requested
-        _generate_gif(data, out, strategy, fps)
+        _generate_gif(data, out, strategy, fps, watermark)
 
     except CLIError as e:
         err_console.print(f"[bold red]Error:[/bold red] {e}")
@@ -151,7 +156,7 @@ def _save_data_to_file(data: ContributionData, file_path: str) -> None:
         raise CLIError(f"Failed to save file '{file_path}': {e}")
 
 
-def _generate_gif(data: ContributionData, file_path: str, strategy_name: str, fps: int) -> None:
+def _generate_gif(data: ContributionData, file_path: str, strategy_name: str, fps: int, watermark: bool) -> None:
     """Generate animated GIF visualization."""
     # GIF format limitation: delays below 20ms (>50 FPS) are clamped by most browsers
     if fps > 50:
@@ -174,7 +179,7 @@ def _generate_gif(data: ContributionData, file_path: str, strategy_name: str, fp
 
     # Create animator and generate GIF
     try:
-        animator = Animator(data, strategy, fps=fps)
+        animator = Animator(data, strategy, fps=fps, watermark=watermark)
         animator.generate_gif(file_path)
         console.print(f"[green]✓[/green] GIF saved to {file_path}")
     except Exception as e:
