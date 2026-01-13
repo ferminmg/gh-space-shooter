@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse, Response
+# from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from gh_space_shooter.game import Animator, ColumnStrategy, RandomStrategy, RowStrategy, BaseStrategy
@@ -18,6 +19,7 @@ load_dotenv()
 app = FastAPI(title="GitHub Space Shooter")
 
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
+# app.mount("/public", StaticFiles(directory=Path(__file__).parent / "public"), name="public")
 
 
 STRATEGY_MAP: dict[str, type[BaseStrategy]] = {
@@ -37,6 +39,12 @@ def generate_gif(username: str, strategy: str, token: str) -> BytesIO:
 
     animator = Animator(data, strat, fps=25, watermark=True)
     return animator.generate_gif(maxFrame=250)
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    # /vercel.svg is automatically served when included in the public/** directory.
+    return RedirectResponse("/vercel.svg", status_code=307)
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
