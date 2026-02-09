@@ -1,6 +1,5 @@
 """Tests for Animator."""
 
-import pytest
 from gh_space_shooter.game import Animator, ColumnStrategy
 from gh_space_shooter.github_client import ContributionData
 
@@ -34,16 +33,3 @@ def test_generate_frames_returns_iterator():
 
     assert len(frames) > 0
     assert all(hasattr(f, "save") for f in frames)  # PIL Images have save method
-
-
-def test_generate_with_provider():
-    """generate should work with any OutputProvider."""
-    from gh_space_shooter.output import WebPOutputProvider
-
-    strategy = ColumnStrategy()
-    animator = Animator(SAMPLE_DATA, strategy, fps=30)
-    provider = WebPOutputProvider(fps=30)
-
-    buffer = animator.generate(provider)
-
-    assert buffer.getvalue().startswith(b"RIFF")

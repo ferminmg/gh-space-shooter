@@ -7,7 +7,15 @@ from .github_client import ContributionData
 
 console = Console()
 
+
 class ContributionConsolePrinter:
+    """Prints GitHub contribution data to the console with formatting.
+
+    Displays contribution statistics and renders a GitHub-style contribution
+    graph using colored blocks via the Rich library.
+    """
+
+    def display_stats(self, data: ContributionData) -> None:
     def display_stats(self, data: ContributionData) -> None:
         """Display contribution statistics in a one-liner."""
         # Get date range

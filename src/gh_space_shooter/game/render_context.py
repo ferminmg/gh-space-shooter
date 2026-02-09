@@ -30,8 +30,8 @@ class RenderContext:
         Get the pixel position (x, y) for a grid coordinate.
 
         Args:
-            week: Week position (0-51, can be fractional for smooth animation)
-            day: Day position (0-6, can be fractional for smooth animation)
+            x: Week position (0-51, can be fractional for smooth animation)
+            y: Day position (0-6, can be fractional for smooth animation)
 
         Returns:
             Tuple of (x, y) pixel coordinates

@@ -61,7 +61,7 @@ def main(
         "--fps",
         help="Frames per second for the animation",
     ),
-    maxFrame: int | None = typer.Option(
+    max_frames: int | None = typer.Option(
         None,
         "--max-frame",
         help="Maximum number of frames to generate",
@@ -87,7 +87,7 @@ def main(
     """
     try:
         if not username:
-            raise CLIError("Username is required when not using --raw-input")
+            raise CLIError("Username is required")
         if not out:
             out = f"{username}-gh-space-shooter.gif"
         # Load data from file or GitHub
@@ -106,7 +106,7 @@ def main(
             _save_data_to_file(data, raw_output)
 
         # Generate output if requested
-        _generate_output(data, out, strategy, fps, watermark, maxFrame)
+        _generate_output(data, out, strategy, fps, watermark, max_frames)
 
     except CLIError as e:
         err_console.print(f"[bold red]Error:[/bold red] {e}")
@@ -168,7 +168,7 @@ def _generate_output(
     strategy_name: str,
     fps: int,
     watermark: bool,
-    maxFrame: int | None,
+    max_frames: int | None,
 ) -> None:
     """Generate animation in the format specified by file_path extension."""
     from pathlib import Path
@@ -197,19 +197,16 @@ def _generate_output(
 
     # Resolve output provider
     try:
-        provider = resolve_output_provider(file_path, fps=fps, watermark=watermark)
+        provider = resolve_output_provider(file_path)
     except ValueError as e:
         raise CLIError(str(e))
 
     # Generate animation
     try:
         animator = Animator(data, strategy, fps=fps, watermark=watermark)
-
-        if maxFrame:
-            frames = list(animator.generate_frames())[:maxFrame]
-            encoded = provider.encode(iter(frames))
-        else:
-            encoded = provider.encode(animator.generate_frames())
+        encoded = provider.encode(
+            animator.generate_frames(max_frames), 
+            frame_duration=1000 // fps)
 
         console.print(f"[bold blue]Saving to {file_path}...[/bold blue]")
         with open(file_path, "wb") as f:

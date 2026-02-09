@@ -15,8 +15,6 @@ _PROVIDER_MAP: dict[str, type[OutputProvider]] = {
 
 def resolve_output_provider(
     file_path: str,
-    fps: int,
-    watermark: bool = False,
 ) -> OutputProvider:
     """
     Resolve the appropriate output provider based on file extension.
@@ -41,7 +39,7 @@ def resolve_output_provider(
         )
 
     provider_class = _PROVIDER_MAP[ext]
-    return provider_class(fps=fps, watermark=watermark)
+    return provider_class()
 
 
 __all__ = ["OutputProvider", "GifOutputProvider", "WebPOutputProvider", "resolve_output_provider"]

@@ -1,4 +1,8 @@
-"""Global constants for the application."""
+"""Global constants for the application.
+
+All speed values are in cells/second and durations are in seconds.
+These values are frame-rate independent and should be scaled by delta_time.
+"""
 
 # Animation settings
 DEFAULT_FPS = 40  # Default frames per second for animation

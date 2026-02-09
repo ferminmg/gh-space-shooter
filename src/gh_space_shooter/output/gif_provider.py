@@ -9,7 +9,7 @@ from .base import OutputProvider
 class GifOutputProvider(OutputProvider):
     """Output provider for GIF format."""
 
-    def encode(self, frames: Iterator[Image.Image]) -> bytes:
+    def encode(self, frames: Iterator[Image.Image], frame_duration: int) -> bytes:
         """
         Encode frames as animated GIF.
 
@@ -28,7 +28,7 @@ class GifOutputProvider(OutputProvider):
                 format="gif",
                 save_all=True,
                 append_images=frame_list[1:],
-                duration=self.frame_duration,
+                duration=frame_duration,
                 loop=0,
                 optimize=False,
             )

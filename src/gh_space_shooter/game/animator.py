@@ -6,7 +6,6 @@ from typing import Iterator
 from PIL import Image
 
 from ..github_client import ContributionData
-from ..output import GifOutputProvider, OutputProvider
 from .game_state import GameState
 from .renderer import Renderer
 from .strategies.base_strategy import BaseStrategy
@@ -41,7 +40,7 @@ class Animator:
         # Used to scale all speeds (cells/second) to per-frame movement
         self.delta_time = 1.0 / fps
 
-    def generate_frames(self) -> Iterator[Image.Image]:
+    def generate_frames(self, max_frames: int | None = None) -> Iterator[Image.Image]:
         """
         Generate all animation frames.
 
@@ -50,43 +49,15 @@ class Animator:
         """
         game_state = GameState(self.contribution_data)
         renderer = Renderer(game_state, RenderContext.darkmode(), watermark=self.watermark)
-        yield from self._generate_frames(game_state, renderer)
-
-    def generate(self, provider: OutputProvider) -> BytesIO:
-        """
-        Generate animation using the specified output provider.
-
-        Args:
-            provider: OutputProvider instance for encoding
-
-        Returns:
-            BytesIO buffer with encoded animation
-        """
-        buffer = BytesIO()
-        encoded = provider.encode(self.generate_frames())
-        buffer.write(encoded)
-        buffer.seek(0)
-        return buffer
-
-    def generate_gif(self, maxFrame: int | None) -> BytesIO:
-        """
-        Generate animated GIF (legacy method).
-
-        Args:
-            maxFrame: Maximum number of frames to generate
-        """
-        provider = GifOutputProvider(fps=self.fps, watermark=self.watermark)
-
-        if maxFrame:
-            frames = list(self.generate_frames())[:maxFrame]
-            encoded = provider.encode(iter(frames))
+        
+        if max_frames is not None:
+            gen = self._generate_frames(game_state, renderer)
+            while max_frames > 0:
+                max_frames -= 1
+                yield next(gen)
         else:
-            encoded = provider.encode(self.generate_frames())
-
-        buffer = BytesIO()
-        buffer.write(encoded)
-        buffer.seek(0)
-        return buffer
+            yield from self._generate_frames(game_state, renderer)
+        
 
     def _generate_frames(
         self, game_state: GameState, renderer: Renderer

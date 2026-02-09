@@ -46,7 +46,7 @@ Then display it in your README:
 **Action Inputs:**
 - `github-token` (required): GitHub token for fetching contributions
 - `username` (optional): Username to generate game for (defaults to repo owner)
-- `output-path` (optional): Where to save the GIF (default: `gh-space-shooter.gif`)
+- `output-path` (optional): Where to save the animation, supports `.gif` or `.webp` (default: `gh-space-shooter.gif`)
 - `strategy` (optional): Attack pattern - `column`, `row`, or `random` (default: `random`)
 - `fps` (optional): Frames per second for the animation (default: `40`)
 - `commit-message` (optional): Commit message for the update
@@ -91,9 +91,9 @@ pip install -e .
    export GH_TOKEN=your_token_here
    ```
 
-## Usage
+## CLI Usage
 
-### Generate Your Game GIF
+### Generate Your Game Animation (GIF or WebP)
 
 Transform your GitHub contributions into an epic space shooter!
 
@@ -105,9 +105,9 @@ gh-space-shooter <username>
 gh-space-shooter torvalds
 gh-space-shooter octocat
 
-# Specify custom output filename
+# Specify custom output filename (GIF or WebP)
 gh-space-shooter torvalds --output my-epic-game.gif
-gh-space-shooter torvalds -o my-game.gif
+gh-space-shooter torvalds -o my-game.webp
 
 # Choose enemy attack strategy
 gh-space-shooter torvalds --strategy row      # Enemies attack in rows
@@ -135,10 +135,10 @@ This creates an animated GIF showing:
 gh-space-shooter torvalds --raw-output data.json
 
 # Load from previously saved JSON (saves API rate limits)
-gh-space-shooter --raw-input data.json --output game.gif
+gh-space-shooter --raw-input data.json --output game.webp
 
 # Combine options
-gh-space-shooter torvalds -o game.gif -ro data.json -s column
+gh-space-shooter torvalds -o game.webp -ro data.json -s column
 ```
 
 ### Data Format
